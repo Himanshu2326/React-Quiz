@@ -1,10 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import QuizData from './QuizData';
 import QuizResult from './QuizResult';
 
 function Quiz() {
 
-    //? States :------
+    //* States :------
     const [question, setQuestion] = useState(() => {
         const savedQuestion = localStorage.getItem('currentQuestion');
         return savedQuestion ? JSON.parse(savedQuestion) : 0;
@@ -12,14 +13,16 @@ function Quiz() {
     const [score, setScore] = useState(0);
     const [clickedOption, setClickedOption] = useState(null);
     const [showResult, setShowResult] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(() => !!document.fullscreenElement);
+    const [isFullscreen, setIsFullscreen] = useState(() => !!document.fullscreenElement); //? !!document.fullscreenElement -> !!null evaluates to false
+
+
     const [timer, setTimer] = useState(() => {
         const savedTimer = localStorage.getItem('timer');
         return savedTimer ? JSON.parse(savedTimer) : 600;
     });
 
 
-    //? Change Question :-----
+    //* Change Question :-----
     const changeQuestion = () => {
         updateScore();
         if (question < QuizData.length - 1) {
@@ -30,14 +33,14 @@ function Quiz() {
         setClickedOption(null);
     };
 
-    //? Update Score :------
+    //* Update Score :------
     const updateScore = () => {
         if (clickedOption === QuizData[question].answer) {
             setScore(score + 1);
         }
     };
 
-    //? Reset  :-----
+    //* Reset  :-----
     const resetAll = () => {
         setQuestion(0);
         setClickedOption(null);
@@ -49,12 +52,13 @@ function Quiz() {
     };
 
 
-    //? Full Screen :----- 
+    //* Full Screen :----- 
     useEffect(() => {
         const handleFullscreenChange = () => {
             setIsFullscreen(!!document.fullscreenElement);
         };
 
+        //  Runs in Every entry or exist :--
         document.addEventListener('fullscreenchange', handleFullscreenChange);
 
         return () => {
@@ -62,13 +66,15 @@ function Quiz() {
         };
     }, []);
 
+
+    //* Set Local Storage :---- 
     useEffect(() => {
         localStorage.setItem('currentQuestion', JSON.stringify(question));
         localStorage.setItem('timer', JSON.stringify(timer));
     }, [question, timer]);
 
 
-    //? Timmer :--
+    //* Timmer :--
     useEffect(() => {
         if (timer > 0) {
             const interval = setInterval(() => {
@@ -82,11 +88,15 @@ function Quiz() {
         }
     }, [timer]);
 
+
+
+    //? To Make It In Full Screen :-  
     const requestFullScreen = () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
         }
     };
+
 
     return (
         <div className="Quiz-Container">
